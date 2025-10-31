@@ -1,6 +1,11 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import dotenv from "dotenv";
+import { connectDB } from "./db";
+
+dotenv.config();               // ✅ Load environment variables
+connectDB();                   // ✅ Connect to MongoDB Atlas
 
 const app = express();
 
@@ -9,11 +14,13 @@ declare module 'http' {
     rawBody: unknown
   }
 }
+
 app.use(express.json({
   verify: (req, _res, buf) => {
     req.rawBody = buf;
   }
 }));
+
 app.use(express.urlencoded({ extended: false }));
 
 app.use((req, res, next) => {
